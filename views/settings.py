@@ -63,6 +63,7 @@ class SettingsWindow(QDialog):
     def openColorPicker(self):        
         color = QColorDialog.getColor()
         if color.isValid():
-            with open("styles/config.py", "a") as f:
-                f.write(f"\n{color.name().upper()} = ('{color.name()}', '{color.name()}')\n")
+            with open(os.path.join(os.path.dirname(__file__), "config.json"), "w") as f:
+                "Color_System"["CUSTOM"] = [color.name(), color.darker().name(), color.lighter().name()]
+                json.dump({"Color_System": {k: v for k, v in "Color_System".items()}, "Configuration": {c.name: c.value for c in Configuration}}, f, indent=2)
             
