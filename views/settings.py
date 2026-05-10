@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel
 from styles.config import Color_System, Configuration
+import json
 import os
 import sys
 from startup import is_startup_enabled, enable_startup, disable_startup
@@ -47,12 +48,10 @@ class SettingsWindow(QDialog):
         config = self.config_combo.currentText()
         
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        config_path = os.path.join(base_dir, "user_files", "user_config.py")
-        
+        config_path = os.path.join(base_dir, "user_files", "user_config.json")
+
         with open(config_path, "w") as f:
-            f.write("from styles.config import *\n\n")
-            f.write(f"color_system = Color_System.{color}\n")
-            f.write(f"configuration = Configuration.{config}\n")
+            json.dump({"color_system": color, "configuration": config}, f, indent=2)
         
         if self.startup_checkbox.isChecked():
             enable_startup()
