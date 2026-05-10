@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QLineEdit, QSystemTrayI
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QIcon, QAction
 import os
+import sys
 from datetime import datetime
 from user_files.user_config import*
 from views.settings import SettingsWindow
@@ -68,10 +69,20 @@ class NoteLineEdit(QLineEdit):
             file.write("\n\n")
 
 
+f = open("monapp.lock", "w")
+try:
+    import msvcrt
+    msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+except OSError:
+    sys.exit(0)
 app = QApplication([])
 settings_window = SettingsWindow()
 
 def open_settings():
+    settings_window.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+    settings_window.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
+    settings_window.setStyleSheet("background: "+color_system.value[2]+"; color:"+color_system.value[0]+";")    
+    settings_window.move(window.x()//2, window.y()//2)
     settings_window.show()
 
 

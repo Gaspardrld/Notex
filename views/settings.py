@@ -60,7 +60,9 @@ class SettingsWindow(QDialog):
         
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
-    def openColorPicker(self):
+    def openColorPicker(self):        
         color = QColorDialog.getColor()
         if color.isValid():
-            print(color.name())
+            with open("styles/config.py", "a") as f:
+                f.write(f"\n{color.name().upper()} = ('{color.name()}', '{color.name()}')\n")
+            
