@@ -4,6 +4,8 @@ import os
 import sys
 from startup import is_startup_enabled, enable_startup, disable_startup
 from PySide6.QtWidgets import QCheckBox
+from PySide6.QtWidgets import QColorDialog
+from styles.config import*
 
 class SettingsWindow(QDialog):
     def __init__(self):
@@ -23,6 +25,13 @@ class SettingsWindow(QDialog):
         self.config_combo.addItems([c.name for c in Configuration])
         layout.addWidget(self.config_combo)
         
+
+        layout.addWidget(QLabel("Add custom color theme"))
+        save_btn = QPushButton("Pick colors")
+        save_btn.clicked.connect(self.openColorPicker)
+        layout.addWidget(save_btn)
+        
+        layout.addWidget(QLabel("Note: Changes will be applied after restarting the app."))
         save_btn = QPushButton("Save (restart to apply)")
         save_btn.clicked.connect(self.save)
         layout.addWidget(save_btn)
@@ -52,3 +61,7 @@ class SettingsWindow(QDialog):
         
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
+    def openColorPicker(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            print(color.name())
