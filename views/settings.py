@@ -1,4 +1,6 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel
+from matplotlib import colors
+from PySide6.QtGui import QColor
 from styles.config import Color_System, Configuration
 import json
 import os
@@ -61,9 +63,32 @@ class SettingsWindow(QDialog):
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
     def openColorPicker(self):        
-        color = QColorDialog.getColor()
+        labels = ["Couleur texte", "Couleur fond", "Couleur accent"]
+        colors = []
+
+        for label in labels:
+            color = QColorDialog.getColor(
+                QColor("white"), self, f"Choisir — {label}"
+            )
+            if not color.isValid():
+                return 
+            colors.append(color)
+        CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "styles", "config.json")
+        CONFIG_PATH = os.path.normpath(CONFIG_PATH) 
         if color.isValid():
-            with open(os.path.join(os.path.dirname(__file__), "config.json"), "w") as f:
-                "Color_System"["CUSTOM"] = [color.name(), color.darker().name(), color.lighter().name()]
-                json.dump({"Color_System": {k: v for k, v in "Color_System".items()}, "Configuration": {c.name: c.value for c in Configuration}}, f, indent=2)
+            with open(CONFIG_PATH, "r") as f:
+                data = json.load(f)
+            data["Color_System"]["CUSTOM"] = [
+                    colors[0].name(),
+                    colors[1].name(),
+                    colors[2].name()
+                ]
+            with open(CONFIG_PATH, "w") as f:
+                json.dump(
+                {
+                    "Color_System": data["Color_System"],
+                    "Configuration": {c.name: c.value for c in Configuration}
+                },
+                f,
+                indent=2 )
             

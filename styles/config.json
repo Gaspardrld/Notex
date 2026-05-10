@@ -1,7 +1,20 @@
 {
   "Color_System": {
-    "DARK": ["white", "black", "black"],
-    "LIGHT": ["black", "white", "lightgray"]
+    "DARK": [
+      "white",
+      "black",
+      "black"
+    ],
+    "LIGHT": [
+      "black",
+      "white",
+      "lightgray"
+    ],
+    "CUSTOM": [
+      "#c5ff99",
+      "#ffffff",
+      "#ffffff"
+    ]
   },
   "Configuration": {
     "CENTER_BAR": 1,

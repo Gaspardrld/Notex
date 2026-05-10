@@ -62,7 +62,7 @@ class NoteLineEdit(QLineEdit):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         notes_dir = os.path.join(base_dir, "user_files")
         os.makedirs(notes_dir, exist_ok=True)
-        with open(os.path.join(notes_dir, "note.txt"), "a") as file:
+        with open(os.path.join(notes_dir, "note.txt"), "a", encoding="utf-8") as file:
             file.write(datetime.now().strftime("%d/%m/%Y %H:%M"))   
             file.write("\n")   
             file.write(self.text())
