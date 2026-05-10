@@ -1,0 +1,10 @@
+{
+  "Color_System": {
+    "DARK": ["white", "black", "black"],
+    "LIGHT": ["black", "white", "lightgray"]
+  },
+  "Configuration": {
+    "CENTER_BAR": 1,
+    "BOTTOM_RIGHT_BAR": 2
+  }
+}
