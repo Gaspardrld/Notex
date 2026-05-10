@@ -44,6 +44,12 @@ class NoteLineEdit(QLineEdit):
         self.setStyleSheet("font-size: 16px; padding: 10px; color:"+color_system.value[0]+"; background:"+color_system.value[1]+"; border: none; outline: none;")
         self.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.setGeometry(10, 10, self.parent().width()-20, self.parent().height()-20)
+        notes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
+        os.makedirs(notes_dir, exist_ok=True)
+        self._notes_path = os.path.join(notes_dir, "note.txt")
+        # pre-warm file I/O so the first save isn't slow
+        with open(self._notes_path, "a", encoding="utf-8"):
+            pass
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
@@ -53,18 +59,13 @@ class NoteLineEdit(QLineEdit):
             self.setText("✓")
             QTimer.singleShot(500, lambda: self.setText(""))
             QTimer.singleShot(500, lambda: self.setReadOnly(False))
-
         else:
             super().keyPressEvent(event)
 
-    
     def write_text(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        notes_dir = os.path.join(base_dir, "user_files")
-        os.makedirs(notes_dir, exist_ok=True)
-        with open(os.path.join(notes_dir, "note.txt"), "a", encoding="utf-8") as file:
-            file.write(datetime.now().strftime("%d/%m/%Y %H:%M"))   
-            file.write("\n")   
+        with open(self._notes_path, "a", encoding="utf-8") as file:
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M"))
+            file.write("\n")
             file.write(self.text())
             file.write("\n\n")
 
@@ -81,8 +82,13 @@ settings_window = SettingsWindow()
 def open_settings():
     settings_window.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
     settings_window.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
-    settings_window.setStyleSheet("background: "+color_system.value[2]+"; color:"+color_system.value[0]+";")    
-    settings_window.move(window.x()//2, window.y()//2)
+    settings_window.setStyleSheet("background: "+color_system.value[2]+"; color:"+color_system.value[0]+";")
+    screen = QApplication.primaryScreen().availableGeometry()
+    settings_window.adjustSize()
+    settings_window.move(
+        (screen.width() - settings_window.width()) // 2,
+        (screen.height() - settings_window.height()) // 2
+    )
     settings_window.show()
 
 

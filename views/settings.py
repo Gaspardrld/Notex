@@ -1,12 +1,10 @@
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel
+from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel, QCheckBox, QColorDialog
 from PySide6.QtGui import QColor
 from styles.config import Color_System, Configuration
 import json
 import os
 import sys
 from startup import is_startup_enabled, enable_startup, disable_startup
-from PySide6.QtWidgets import QCheckBox
-from PySide6.QtWidgets import QColorDialog
 from styles.config import*
 
 class SettingsWindow(QDialog):
@@ -61,17 +59,22 @@ class SettingsWindow(QDialog):
         
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
-    def openColorPicker(self):        
+    def openColorPicker(self):
         labels = ["Couleur texte", "Couleur fond", "Couleur accent"]
         colors = []
+        screen = QApplication.primaryScreen().availableGeometry()
 
         for label in labels:
-            color = QColorDialog.getColor(
-                QColor("white"), self, f"Choisir — {label}"
+            dialog = QColorDialog(QColor("white"), self)
+            dialog.setWindowTitle(f"Choisir — {label}")
+            dialog.adjustSize()
+            dialog.move(
+                (screen.width() - dialog.width()) // 2,
+                (screen.height() - dialog.height()) // 2
             )
-            if not color.isValid():
-                return 
-            colors.append(color)
+            if not dialog.exec():
+                return
+            colors.append(dialog.selectedColor())
         CONFIG_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "styles", "config.json"))
         with open(CONFIG_PATH, "r") as f:
             data = json.load(f)
