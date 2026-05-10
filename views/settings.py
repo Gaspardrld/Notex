@@ -92,4 +92,3 @@ class SettingsWindow(QDialog):
                 f,
                 indent=2
             )
-            
