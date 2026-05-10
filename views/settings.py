@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel
-from matplotlib import colors
 from PySide6.QtGui import QColor
 from styles.config import Color_System, Configuration
 import json
@@ -73,22 +72,21 @@ class SettingsWindow(QDialog):
             if not color.isValid():
                 return 
             colors.append(color)
-        CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "styles", "config.json")
-        CONFIG_PATH = os.path.normpath(CONFIG_PATH) 
-        if color.isValid():
-            with open(CONFIG_PATH, "r") as f:
-                data = json.load(f)
-            data["Color_System"]["CUSTOM"] = [
-                    colors[0].name(),
-                    colors[1].name(),
-                    colors[2].name()
-                ]
-            with open(CONFIG_PATH, "w") as f:
-                json.dump(
+        CONFIG_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "styles", "config.json"))
+        with open(CONFIG_PATH, "r") as f:
+            data = json.load(f)
+        data["Color_System"]["CUSTOM"] = [
+            colors[0].name(),
+            colors[1].name(),
+            colors[2].name()
+        ]
+        with open(CONFIG_PATH, "w") as f:
+            json.dump(
                 {
                     "Color_System": data["Color_System"],
                     "Configuration": {c.name: c.value for c in Configuration}
                 },
                 f,
-                indent=2 )
+                indent=2
+            )
             
