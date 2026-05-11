@@ -1,11 +1,11 @@
 from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel, QCheckBox, QColorDialog
 from PySide6.QtGui import QColor
-from styles.config import Color_System, Configuration
 import json
 import os
 import sys
 from startup import is_startup_enabled, enable_startup, disable_startup
 from styles.config import*
+from user_files.user_config import*
 
 class SettingsWindow(QDialog):
     def __init__(self):
@@ -18,14 +18,15 @@ class SettingsWindow(QDialog):
         layout.addWidget(QLabel("Color System:"))
         self.color_combo = QComboBox()
         self.color_combo.addItems([c.name for c in Color_System])
+        self.color_combo.setCurrentText(color_system.name)
         layout.addWidget(self.color_combo)
         
         layout.addWidget(QLabel("Configuration:"))
         self.config_combo = QComboBox()
         self.config_combo.addItems([c.name for c in Configuration])
+        self.config_combo.setCurrentText(configuration.name)
         layout.addWidget(self.config_combo)
         
-
         layout.addWidget(QLabel("Add custom color theme"))
         save_btn = QPushButton("Pick colors")
         save_btn.clicked.connect(self.openColorPicker)
@@ -60,7 +61,7 @@ class SettingsWindow(QDialog):
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
     def openColorPicker(self):
-        labels = ["Couleur texte", "Couleur fond", "Couleur accent"]
+        labels = ["Couleur texte", "Couleur fond", "Couleur bord"]
         colors = []
         screen = QApplication.primaryScreen().availableGeometry()
 
