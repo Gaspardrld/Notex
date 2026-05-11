@@ -78,8 +78,11 @@ class NoteLineEdit(QPlainTextEdit):
             pass
 
     def ask_notex(self, prompt):
-        response = ask_mistral(prompt)
-        self.setPlainText(response)
+        try : 
+            response = ask_mistral(prompt)
+            self.setPlainText(response)
+        except Exception as e: 
+            self.setPlainText(f"Erreur : {str(e)[:100]}")
         self._adjust_height()
 
     def keyPressEvent(self, event):
