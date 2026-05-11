@@ -5,7 +5,6 @@ import os
 import sys
 from datetime import datetime
 
-from matplotlib import text
 from user_files.user_config import*
 from views.settings import SettingsWindow
 from PySide6.QtGui import QShortcut, QKeySequence
@@ -94,12 +93,12 @@ class NoteLineEdit(QPlainTextEdit):
                     self.setPlainText("⏳")
                     QTimer.singleShot(100, lambda: self.ask_notex(prompt))
                 else:
+                    self.reset_height()
                     if self.current_state == States.EDIT_RUNNING:
                         if text :
                             self.write_text()
                         self.clear()
                         self.setReadOnly(True)
-                        self.reset_height()
                         self.setPlainText("✓")
                         QTimer.singleShot(500, lambda: self.setPlainText(""))
                         QTimer.singleShot(500, lambda: self.setReadOnly(False))

@@ -46,7 +46,11 @@ Règles :
 10. Ton : neutre, précis, efficace. Comme un collègue qui prépare une synthèse exploitable."""
 
 def ask_mistral(prompt):
-    with open("user_files/note.txt", "r", encoding="utf-8") as f:
+    notes_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "user_files", "note.txt"
+)
+    with open(notes_path, "r", encoding="utf-8") as f:
         notes = f.read()
     response = client.chat.complete(
         model="mistral-small-latest",
