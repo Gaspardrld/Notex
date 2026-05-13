@@ -18,6 +18,7 @@ class States(Enum):
     EDIT_RUNNING = 1 
     AI_RUNNING = 2
     AI_RUNNING_FINISH = 3
+cond_ia = "/"
 
 class MainWindow(QMainWindow):
     w, h = 0,0
@@ -82,7 +83,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
 
     def detect_notex(self):
         text = self.toPlainText()
-        if text.lower().startswith("/notex "):
+        if text.lower().startswith(cond_ia):
             self.current_state = States.AI_RUNNING
             self.setStyleSheet("font-size: 16px; padding: 10px; color: navy; background:white; border: none; outline: none;")
             self.parent().setStyleSheet("background: white;")
@@ -108,7 +109,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
             if not (event.modifiers() & Qt.ShiftModifier):
                 text = self.toPlainText().strip()
                 if self.current_state == States.AI_RUNNING :
-                    prompt = text[len("/notex "):].strip()
+                    prompt = text[len(cond_ia):].strip()
                     self.setReadOnly(True)
                     self.setPlainText("⏳")
                     QTimer.singleShot(100, lambda: self.ask_notex(prompt))
