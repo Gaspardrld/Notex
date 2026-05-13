@@ -8,9 +8,9 @@ class ShimmerPlainTextEdit(QPlainTextEdit):
         super().__init__(parent)
         self.shimmer_pos = -100
         self.shimmer_active = False
-        self.shimmer_width = 120
-        self.shimmer_speed = 8
-        self.shimmer_intensity = 120
+        self.shimmer_width = 150
+        self.shimmer_speed = 12
+        self.shimmer_intensity = 150
         
         self.shimmer_timer = QTimer(self)
         self.shimmer_timer.timeout.connect(self._update_shimmer)
