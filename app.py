@@ -10,12 +10,14 @@ from views.settings import SettingsWindow
 from PySide6.QtGui import QShortcut, QKeySequence
 from enum import*
 from mistral_.mistral_retriever import ask_mistral
+from assets.animation.shimmer_text_edit import ShimmerPlainTextEdit
 
 
 MAX_HEIGHT = 400
 class States(Enum):
     EDIT_RUNNING = 1 
     AI_RUNNING = 2
+    AI_RUNNING_FINISH = 3
 
 class MainWindow(QMainWindow):
     w, h = 0,0
@@ -59,7 +61,7 @@ class MainWindow(QMainWindow):
         if event.key() == Qt.Key_A and event.modifiers() & Qt.ControlModifier:
             open_settings()
 
-class NoteLineEdit(QPlainTextEdit):
+class NoteLineEdit(ShimmerPlainTextEdit):
 
     current_state = States.EDIT_RUNNING
 
@@ -76,25 +78,41 @@ class NoteLineEdit(QPlainTextEdit):
         self._notes_path = os.path.join(notes_dir, "note.txt")
         with open(self._notes_path, "a", encoding="utf-8"):
             pass
+        self.textChanged.connect(self.detect_notex)
+
+    def detect_notex(self):
+        text = self.toPlainText()
+        if text.lower().startswith("/notex "):
+            self.current_state = States.AI_RUNNING
+            self.setStyleSheet("font-size: 16px; padding: 10px; color: navy; background:white; border: none; outline: none;")
+            self.parent().setStyleSheet("background: white;")
+            self.start_shimmer()
+        else :
+            self.setStyleSheet("font-size: 16px; padding: 10px; color:"+color_system.value[0]+"; background:"+color_system.value[1]+"; border: none; outline: none;")
+            self.parent().setStyleSheet("background: "+color_system.value[2]+";")
+            self.current_state = States.EDIT_RUNNING
+            self.stop_shimmer()
+
 
     def ask_notex(self, prompt):
-        try : 
+        try :
             response = ask_mistral(prompt)
             self.setPlainText(response)
         except Exception as e: 
             self.setPlainText(f"Erreur : {str(e)[:100]}")
         self._adjust_height()
+        self.current_state = States.AI_RUNNING_FINISH
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
             if not (event.modifiers() & Qt.ShiftModifier):
                 text = self.toPlainText().strip()
-                if text.lower().startswith("/notex "):
-                    self.current_state = States.AI_RUNNING
+                if self.current_state == States.AI_RUNNING :
                     prompt = text[len("/notex "):].strip()
                     self.setReadOnly(True)
                     self.setPlainText("⏳")
                     QTimer.singleShot(100, lambda: self.ask_notex(prompt))
+                    self_current_states = States.AI_RUNNING_FINISH
                 else:
                     self.reset_height()
                     if self.current_state == States.EDIT_RUNNING:
@@ -108,6 +126,7 @@ class NoteLineEdit(QPlainTextEdit):
                     else :
                         self.setPlainText("")
                         self.setReadOnly(False)
+                        self.current_state = States.EDIT_RUNNING
             else:
                 if self.current_state == States.EDIT_RUNNING:
                     self.insertPlainText("\n")
