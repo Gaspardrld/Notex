@@ -50,7 +50,7 @@ def ask_mistral(prompt):
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     "user_files", "note.txt"
 )
-    with open(notes_path, "r", encoding="utf-8") as f:
+    with open(notes_path, "r", encoding="utf-8-sig", errors="replace") as f:
         notes = f.read()
     response = client.chat.complete(
         model="mistral-small-latest",
