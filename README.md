@@ -29,3 +29,16 @@ Get your key from [console.mistral.ai](https://console.mistral.ai)
 ## Usage
 
 Type `/your question` in any note to get an AI response inline.
+
+## Shortcuts
+
+| Shortcut          | Action                          |
+| ----------------- | ------------------------------- |
+| `Ctrl + Space`    | Show/hide Notex (global)        |
+| `Ctrl + ,`        | Open settings                   |
+| `Ctrl + A`        | Open settings                   |
+| `Ctrl + Q`        | Quit                            |
+| `Esc`             | Hide window                     |
+| `Enter`           | Save note / send AI query       |
+| `Shift + Enter`   | New line                        |
+| `/<prompt>` | Trigger AI response in any note |
