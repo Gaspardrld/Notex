@@ -1,1 +1,1 @@
-Fast Notes
+Notex

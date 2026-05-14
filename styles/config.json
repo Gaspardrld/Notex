@@ -1,0 +1,23 @@
+{
+  "Color_System": {
+    "DARK": [
+      "white",
+      "black",
+      "black"
+    ],
+    "LIGHT": [
+      "black",
+      "white",
+      "lightgray"
+    ],
+    "CUSTOM": [
+      "#aa55ff",
+      "#00ff7f",
+      "#55aaff"
+    ]
+  },
+  "Configuration": {
+    "CENTER_BAR": 1,
+    "BOTTOM_RIGHT_BAR": 2
+  }
+}

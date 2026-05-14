@@ -3,7 +3,7 @@ import sys
 import os
 
 KEY_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
-APP_NAME = "FastNotes"
+APP_NAME = "Notex"
 
 def is_startup_enabled():
     try:
