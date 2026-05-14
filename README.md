@@ -1,4 +1,4 @@
-# Notex
+# Notex - Windows version
 
 A minimal desktop note-taking app with built-in AI assistance.
 Built with PySide6 + Mistral API.
