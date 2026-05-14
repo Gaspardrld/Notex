@@ -4,3 +4,4 @@ __pycache__/
 *.lock
 monapp.lock
 user_files/note.txt
+venv/

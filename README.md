@@ -18,7 +18,7 @@ Get your key from [console.mistral.ai](https://console.mistral.ai)
 
 3. Install dependencies:
 ```bash
-   pip install PySide6 mistralai
+   pip install -r requirements.txt
 ```
 
 4. Run:
@@ -28,4 +28,4 @@ Get your key from [console.mistral.ai](https://console.mistral.ai)
 
 ## Usage
 
-Type `/notex your question` in any note to get an AI response inline.
+Type `/your question` in any note to get an AI response inline.
