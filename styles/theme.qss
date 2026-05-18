@@ -1,0 +1,17 @@
+QScrollBar:vertical {
+    width: 6px;
+    background: transparent;
+    border-radius: 3px;
+}
+QScrollBar::handle:vertical {
+    background: #888;
+    border-radius: 3px;
+    min-height: 20px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #aaa;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}

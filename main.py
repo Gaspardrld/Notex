@@ -55,4 +55,9 @@ if __name__ == '__main__':
     listener.triggered.connect(toggle_window)
     listener.start()
     window.hide()
+
+    notif.set_notif("Notex is running")
+    QTimer.singleShot(3000, notif.hide)
+
     app.exec()
+    

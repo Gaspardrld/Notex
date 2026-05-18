@@ -1,12 +1,13 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QLineEdit, QPlainTextEdit, QSystemTrayIcon, QMenu, QLabel
 from PySide6.QtCore import QTimer, Qt
-from PySide6.QtGui import QIcon, QAction
+from PySide6.QtGui import QIcon, QAction, QTextCursor
 import os
 import sys
 from datetime import datetime
 
 from user_files.user_config import*
 from views.settings import SettingsWindow
+from views.notifications import NotifWindow
 from PySide6.QtGui import QShortcut, QKeySequence
 from enum import*
 from mistral_.mistral_retriever import ask_mistral
@@ -68,18 +69,24 @@ class NoteLineEdit(ShimmerPlainTextEdit):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setPlaceholderText("Tell Punch what's on your mind...")
+        self.setPlaceholderText("/ to ask Notex, or just write...")
         self.setStyleSheet("font-size: 16px; padding: 10px; color:"+color_system.value[0]+"; background:"+color_system.value[1]+"; border: none; outline: none;")
         self.setGeometry(10, 10, self.parent().width()-20, self.parent().height()-20)
         self.setLineWrapMode(QPlainTextEdit.LineWrapMode.WidgetWidth)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         notes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
         os.makedirs(notes_dir, exist_ok=True)
         self._notes_path = os.path.join(notes_dir, "note.txt")
         with open(self._notes_path, "a", encoding="utf-8"):
             pass
-        self.textChanged.connect(self.detect_notex)
+        self.textChanged.connect(self.detect_changes)
+
+    def detect_changes(self):
+        self.moveCursor(QTextCursor.MoveOperation.End)
+        self.detect_notex()
+        if configuration == Configuration.CENTER_BAR :
+            self._adjust_height()
 
     def detect_notex(self):
         text = self.toPlainText()
@@ -101,7 +108,6 @@ class NoteLineEdit(ShimmerPlainTextEdit):
             self.setPlainText(response)
         except Exception as e: 
             self.setPlainText(f"Erreur : {str(e)[:100]}")
-        self._adjust_height()
         self.current_state = States.AI_RUNNING_FINISH
 
     def keyPressEvent(self, event):
@@ -111,8 +117,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
                 if self.current_state == States.AI_RUNNING :
                     prompt = text[len(cond_ia):].strip()
                     self.setReadOnly(True)
-                    self.setPlainText("⏳")
-                    QTimer.singleShot(100, lambda: self.ask_notex(prompt))
+                    self.ask_notex(prompt)
                     self_current_states = States.AI_RUNNING_FINISH
                 else:
                     self.reset_height()
@@ -129,9 +134,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
                         self.setReadOnly(False)
                         self.current_state = States.EDIT_RUNNING
             else:
-                if self.current_state == States.EDIT_RUNNING:
-                    self.insertPlainText("\n")
-                    self._adjust_height()
+                self.insertPlainText("\n")
         else:
             super().keyPressEvent(event)
 
@@ -148,7 +151,6 @@ class NoteLineEdit(ShimmerPlainTextEdit):
         lines = self.document().blockCount()
         padding = 20  # correspond au padding: 10px du stylesheet
         new_h = min(line_h * lines + padding + 10, MAX_HEIGHT)
-
         self.setFixedHeight(new_h)
         self.setGeometry(10, 10, self.parent().width() - 20, new_h)
         self.parent().setFixedHeight(new_h + 20)
@@ -165,6 +167,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
         old_h = self.parent().get_old_height()
         self.setGeometry(10, 10, old_w - 20, old_h - 20)
 
+
 f = open("monapp.lock", "w")
 try:
     import msvcrt
@@ -173,6 +176,7 @@ except OSError:
     sys.exit(0)
 app = QApplication([])
 settings_window = SettingsWindow()
+notif = NotifWindow()
 
 def open_settings():
     settings_window.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
