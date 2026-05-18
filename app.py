@@ -60,8 +60,6 @@ class MainWindow(QMainWindow):
             self.hide()
         if event.key() == Qt.Key_Q and event.modifiers() & Qt.ControlModifier:
             self.close()
-        if event.key() == Qt.Key_A and event.modifiers() & Qt.ControlModifier:
-            open_settings()
 
 class NoteLineEdit(ShimmerPlainTextEdit):
 
