@@ -1,4 +1,4 @@
 PySide6
 mistralai
 python-dotenv
-keyboard
+pynput
