@@ -3,6 +3,11 @@
 A minimal desktop note-taking app with built-in AI assistance.
 Built with PySide6 + Mistral API.
 
+## Screenshots
+
+![AI mode](assets/images/screenshot_ia.png)
+![Notes + Settings](assets/images/screenshot_notes.png)
+
 ## Setup
 
 1. Clone the repo:
