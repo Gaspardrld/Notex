@@ -1,4 +1,4 @@
 PySide6
-mistralai
+mistralai==2.4.5
 python-dotenv
 pynput
