@@ -7,11 +7,11 @@ Built with PySide6 + Mistral API.
 
 ![AI mode](assets/images/screenshot_ia.png)
 ![Notes + Settings](assets/images/screenshot_notes.png)
-![Logo](assets/images/icon.png)
-
 <p align="center">
-  <img src="icon.png" width="250"/>
+  <img src="assets/images/icon.png" width="250"/>
 </p>
+
+<p align="center"><b>Logo</b></p>
 
 ## Setup
 
