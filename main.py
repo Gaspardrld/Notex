@@ -1,63 +1,70 @@
-from app import *
-from hotkey import HotkeyListener
-from PySide6.QtCore import QTimer
-import ctypes
-from PySide6.QtWidgets import QMenu
-from PySide6.QtGui import QAction
+import sys, os, traceback
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-def toggle_window():
-    if window.isVisible():
-        window.hide()
-    else:
-        window.show()
-        force_foreground(int(window.winId()))
-        note_input.setFocus()
+try : 
+    from app import *
+    from hotkey import HotkeyListener
+    from PySide6.QtCore import QTimer
+    import ctypes
+    from PySide6.QtWidgets import QMenu
+    from PySide6.QtGui import QAction
+
+    def toggle_window():
+        if window.isVisible():
+            window.hide()
+        else:
+            window.show()
+            force_foreground(int(window.winId()))
+            note_input.setFocus()
 
 
 
-menu = QMenu()
+    menu = QMenu()
 
-open_action = QAction("Open")
-open_action.triggered.connect(toggle_window)
-menu.addAction(open_action)
-
-
-setting_action = QAction("Settings")
-setting_action.triggered.connect(open_settings)
-menu.addAction(setting_action)
-
-quit_action = QAction("Quit")
-quit_action.triggered.connect(app.quit)
-menu.addAction(quit_action)
+    open_action = QAction("Open")
+    open_action.triggered.connect(toggle_window)
+    menu.addAction(open_action)
 
 
-tray.setContextMenu(menu)
-tray.activated.connect(lambda reason: toggle_window() if reason == QSystemTrayIcon.Trigger else None)
+    setting_action = QAction("Settings")
+    setting_action.triggered.connect(settings_window.open_settings)
+    menu.addAction(setting_action)
 
-def force_foreground(hwnd):
-    user32 = ctypes.windll.user32
-    kernel32 = ctypes.windll.kernel32
-    
-    fg_window = user32.GetForegroundWindow()
-    fg_thread = user32.GetWindowThreadProcessId(fg_window, None)
-    current_thread = kernel32.GetCurrentThreadId()
-    
-    user32.AttachThreadInput(fg_thread, current_thread, True)
-    user32.BringWindowToTop(hwnd)
-    user32.SetForegroundWindow(hwnd)
-    user32.AttachThreadInput(fg_thread, current_thread, False)
+    quit_action = QAction("Quit")
+    quit_action.triggered.connect(app.quit)
+    menu.addAction(quit_action)
 
+
+    tray.setContextMenu(menu)
+    tray.activated.connect(lambda reason: toggle_window() if reason == QSystemTrayIcon.Trigger else None)
+
+    def force_foreground(hwnd):
+        user32 = ctypes.windll.user32
+        kernel32 = ctypes.windll.kernel32
         
+        fg_window = user32.GetForegroundWindow()
+        fg_thread = user32.GetWindowThreadProcessId(fg_window, None)
+        current_thread = kernel32.GetCurrentThreadId()
+        
+        user32.AttachThreadInput(fg_thread, current_thread, True)
+        user32.BringWindowToTop(hwnd)
+        user32.SetForegroundWindow(hwnd)
+        user32.AttachThreadInput(fg_thread, current_thread, False)
 
-if __name__ == '__main__':
-    listener = HotkeyListener()
-    listener.triggered.connect(toggle_window)
-    listener.start()
-    window.hide()
+            
 
-    notif.set_notif("Notex is running")
-    QTimer.singleShot(3000, notif.hide)
+    if __name__ == '__main__':
+        listener = HotkeyListener()
+        listener.triggered.connect(toggle_window)
+        listener.start()
+        window.hide()
 
-    app.exec()
-    
+        notif.set_notif("Notex is running")
+        QTimer.singleShot(3000, notif.hide)
+
+        app.exec()
+
+except Exception:
+    with open("notex_error.log", "w") as f:
+        traceback.print_exc(file=f)   

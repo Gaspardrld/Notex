@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
 
         self.s_w, self.s_h = screen.width(), screen.height()
         shortcut = QShortcut(QKeySequence("Ctrl+,"), self)
-        shortcut.activated.connect(open_settings)
+        shortcut.activated.connect(settings_window.open_settings)
 
     def reset_height(self):
         if configuration == Configuration.CENTER_BAR:
@@ -72,7 +72,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
         self.setGeometry(10, 10, self.parent().width()-20, self.parent().height()-20)
         self.setLineWrapMode(QPlainTextEdit.LineWrapMode.WidgetWidth)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         notes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
         os.makedirs(notes_dir, exist_ok=True)
         self._notes_path = os.path.join(notes_dir, "note.txt")
@@ -81,6 +81,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
         self.textChanged.connect(self.detect_changes)
 
     def detect_changes(self):
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.moveCursor(QTextCursor.MoveOperation.End)
         self.detect_notex()
         if configuration == Configuration.CENTER_BAR :
@@ -98,7 +99,6 @@ class NoteLineEdit(ShimmerPlainTextEdit):
             self.parent().setStyleSheet("background: "+color_system.value[2]+";")
             self.current_state = States.EDIT_RUNNING
             self.stop_shimmer()
-
 
     def ask_notex(self, prompt):
         try :
@@ -175,18 +175,6 @@ except OSError:
 app = QApplication([])
 settings_window = SettingsWindow()
 notif = NotifWindow()
-
-def open_settings():
-    settings_window.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
-    settings_window.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
-    settings_window.setStyleSheet("background: "+color_system.value[2]+"; color:"+color_system.value[0]+";")
-    screen = QApplication.primaryScreen().availableGeometry()
-    settings_window.adjustSize()
-    settings_window.move(
-        (screen.width() - settings_window.width()) // 2,
-        (screen.height() - settings_window.height()) // 2
-    )
-    settings_window.show()
 
 
 icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "images", "icon.png")

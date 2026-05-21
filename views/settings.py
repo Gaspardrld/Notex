@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel, QCheckBox, QColorDialog
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, Qt
 import json
 import os
 import sys
@@ -93,3 +93,15 @@ class SettingsWindow(QDialog):
                 f,
                 indent=2
             )
+
+    def open_settings(self):
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
+        self.setStyleSheet("background: "+color_system.value[2]+"; color:"+color_system.value[0]+";")
+        screen = QApplication.primaryScreen().availableGeometry()
+        self.adjustSize()
+        self.move(
+            (screen.width() - self.width()) // 2,
+            (screen.height() - self.height()) // 2
+        )
+        self.show()
