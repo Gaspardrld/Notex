@@ -116,7 +116,7 @@ class NoteLineEdit(ShimmerPlainTextEdit):
                     prompt = text[len(cond_ia):].strip()
                     self.setReadOnly(True)
                     self.ask_notex(prompt)
-                    self_current_states = States.AI_RUNNING_FINISH
+                    self.current_state = States.AI_RUNNING_FINISH
                 else:
                     self.reset_height()
                     if self.current_state == States.EDIT_RUNNING:

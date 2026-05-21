@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel, QCheckBox, QColorDialog
+from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QComboBox, QPushButton, QLabel, QCheckBox, QColorDialog, QLineEdit, QHBoxLayout
 from PySide6.QtGui import QColor, Qt
 import json
 import os
@@ -8,6 +8,7 @@ from styles.config import*
 from user_files.user_config import*
 
 class SettingsWindow(QDialog):
+    
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Settings")
@@ -40,18 +41,57 @@ class SettingsWindow(QDialog):
         self.startup_checkbox = QCheckBox("Launch at Windows startup")
         self.startup_checkbox.setChecked(is_startup_enabled())
         layout.addWidget(self.startup_checkbox)
+
+        layout.addWidget(QLabel("Clé API Mistral :"))
+
+        password_field = QLineEdit()
+        password_field.setEchoMode(QLineEdit.Password)
+
+        paste_btn = QPushButton("📋 Coller la clé API")
+        paste_btn.clicked.connect(lambda: self.set_apikey(password_field.text()))
+
+        toggle_btn = QPushButton("👁")
+        toggle_btn.setFixedWidth(30)
+        toggle_btn.clicked.connect(lambda: password_field.setEchoMode(
+            QLineEdit.Normal if password_field.echoMode() == QLineEdit.Password else QLineEdit.Password
+        ))
+
+        api_row = QHBoxLayout()
+        api_row.addWidget(paste_btn)
+        api_row.addWidget(password_field)
+        api_row.addWidget(toggle_btn)
+        layout.addLayout(api_row)
         
         self.setLayout(layout)
     
+    def set_apikey(self, key):
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        config_path = os.path.join(base_dir, "user_files", "user_config.json")
+        with open(config_path, "r+") as f:
+            data = json.load(f)
+            data["api_key"] = key
+            f.seek(0)
+            json.dump(data, f, indent=4)
+            f.truncate()
+
     def save(self):
         color = self.color_combo.currentText()
         config = self.config_combo.currentText()
-        
+
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         config_path = os.path.join(base_dir, "user_files", "user_config.json")
 
+        try:
+            with open(config_path, "r") as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+
+        data["color_system"] = color
+        data["configuration"] = config
+
         with open(config_path, "w") as f:
-            json.dump({"color_system": color, "configuration": config}, f, indent=2)
+            json.dump(data, f, indent=2)
         
         if self.startup_checkbox.isChecked():
             enable_startup()

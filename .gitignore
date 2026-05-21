@@ -4,4 +4,7 @@ __pycache__/
 *.lock
 monapp.lock
 user_files/note.txt
+user_files/note.txt.bak
+user_files/user_config.json
+user_files/notes.db
 venv/

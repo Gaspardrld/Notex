@@ -1,4 +1,3 @@
 PySide6
 mistralai==2.4.5
 python-dotenv
-pynput
