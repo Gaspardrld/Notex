@@ -7,6 +7,7 @@ Built with PySide6 + Mistral API.
 
 ![AI mode](assets/images/screenshot_ia.png)
 ![Notes + Settings](assets/images/screenshot_notes.png)
+![Logo](assets/images/icon.png)
 
 ## Setup
 
