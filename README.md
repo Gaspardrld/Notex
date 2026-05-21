@@ -9,7 +9,9 @@ Built with PySide6 + Mistral API.
 ![Notes + Settings](assets/images/screenshot_notes.png)
 ![Logo](assets/images/icon.png)
 
-<img src="icon.png" width="50%">
+<p align="center">
+  <img src="icon.png" width="250"/>
+</p>
 
 ## Setup
 
